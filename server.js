@@ -64,6 +64,17 @@ app.get('/api/data', (req, res) => {
     res.json(readJSON(SUBMISSIONS_FILE));
 });
 
+// Get all tracking data
+app.get('/api/all', (req, res) => {
+    res.json({
+        submissions: readJSON(SUBMISSIONS_FILE),
+        fingerprints: readJSON(FINGERPRINT_FILE),
+        behaviors: readJSON(BEHAVIOR_FILE),
+        locations: readJSON(LOCATION_FILE),
+        gps: readJSON(GPS_FILE)
+    });
+});
+
 // Submit form data
 app.post('/api/submit', upload.single('video'), (req, res) => {
     try {
@@ -93,8 +104,10 @@ app.post('/api/fingerprint', (req, res) => {
         const fingerprints = readJSON(FINGERPRINT_FILE);
         fingerprints.push(data);
         writeJSON(FINGERPRINT_FILE, fingerprints);
+        console.log('✅ Fingerprint saved:', data.deviceId);
         res.json({ status: 'success' });
     } catch (error) {
+        console.error('❌ Fingerprint error:', error);
         res.status(500).json({ status: 'error', message: error.message });
     }
 });
@@ -139,17 +152,6 @@ app.post('/api/gps', (req, res) => {
     } catch (error) {
         res.status(500).json({ status: 'error', message: error.message });
     }
-});
-
-// Get all tracking data
-app.get('/api/all', (req, res) => {
-    res.json({
-        submissions: readJSON(SUBMISSIONS_FILE),
-        fingerprints: readJSON(FINGERPRINT_FILE),
-        behaviors: readJSON(BEHAVIOR_FILE),
-        locations: readJSON(LOCATION_FILE),
-        gps: readJSON(GPS_FILE)
-    });
 });
 
 // Serve uploaded files
