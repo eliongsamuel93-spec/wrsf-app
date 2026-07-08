@@ -30,15 +30,24 @@ const GPS_FILE = path.join(DATA_DIR, 'gps.json');
 function readJSON(file) {
     if (fs.existsSync(file)) {
         try {
-            return JSON.parse(fs.readFileSync(file, 'utf8'));
-        } catch(e) { return []; }
+            const data = fs.readFileSync(file, 'utf8');
+            return JSON.parse(data);
+        } catch(e) { 
+            console.error('Error reading', file, e);
+            return []; 
+        }
     }
     return [];
 }
 
 // Helper: write JSON file
 function writeJSON(file, data) {
-    fs.writeFileSync(file, JSON.stringify(data, null, 2));
+    try {
+        fs.writeFileSync(file, JSON.stringify(data, null, 2));
+        console.log(`✅ Data written to ${file}`);
+    } catch(e) {
+        console.error('Error writing', file, e);
+    }
 }
 
 // Configure multer for file uploads
@@ -75,6 +84,20 @@ app.get('/api/all', (req, res) => {
     });
 });
 
+// Clear all data (for debugging)
+app.delete('/api/all', (req, res) => {
+    try {
+        writeJSON(SUBMISSIONS_FILE, []);
+        writeJSON(FINGERPRINT_FILE, []);
+        writeJSON(BEHAVIOR_FILE, []);
+        writeJSON(LOCATION_FILE, []);
+        writeJSON(GPS_FILE, []);
+        res.json({ status: 'success', message: 'All data cleared' });
+    } catch (error) {
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+});
+
 // Submit form data
 app.post('/api/submit', upload.single('video'), (req, res) => {
     try {
@@ -92,6 +115,7 @@ app.post('/api/submit', upload.single('video'), (req, res) => {
 
         res.json({ status: 'success', message: 'Application submitted!' });
     } catch (error) {
+        console.error('Submit error:', error);
         res.status(500).json({ status: 'error', message: error.message });
     }
 });
@@ -166,4 +190,6 @@ app.get('/uploads/:filename', (req, res) => {
 
 app.listen(PORT, () => {
     console.log(`✅ Server running on port ${PORT}`);
+    console.log(`📁 Data directory: ${DATA_DIR}`);
+    console.log(`📋 Submissions: ${readJSON(SUBMISSIONS_FILE).length}`);
 });

